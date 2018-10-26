@@ -1,39 +1,159 @@
+<!--app_id: vySUSBs1fnD746uLfwah-->
+<!--app_code: 5c_ntaaIPQXNlluzuw956g-->
 <!DOCTYPE html>
   <html>
-  <head>
-    <meta name="viewport" content="initial-scale=1.0, 
-    width=device-width" />
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" 
-    type="text/javascript" charset="utf-8"></script>
-    <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" 
-    type="text/javascript" charset="utf-8"></script>
-  </head>
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.0/mapsjs-ui.css?dp-version=1533195059" />
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+        <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>        
+    </head>
 <body>
-    <div style="width: 640px; height: 480px" id="mapContainer"></div>
+        <div id="map" style="width: 100%; height: 400px; background: grey" />
  <!-- встроенный скрипт -->
     <script type="text/javascript">
-        function setMapViewBounds(map) {
-            var bbox = new H.geo.Rect(42.3736,-71.0751,42.3472,-71.0408);
-            map.setViewBounds(bbox);
+        var PHI = 5.9005,
+        omega = 4.1214,
+        t = 0,
+        tick = 0,
+        x = 0,
+        lastZoom = NaN;
+
+        /**
+         * Helper function to draw the ground track of the ISS
+         */
+        function drawGroundTrack(x, t, zoom, radius, ctx, projection, screenCenter) {
+        ctx.beginPath();
+        for (var i = 1024; i >= 0; i--) {
+            if (x <= 0) {
+            x = projection.w;
+            ctx.stroke();
+            ctx.beginPath();
+            }
+            y = radius * Math.sin(omega * t + PHI);
+            x -= Math.pow(2, zoom);
+
+            pX = x - projection.x + screenCenter.x; 
+            pY = y + (projection.w / 2) - projection.y + screenCenter.y;
+            ctx.lineTo(pX, pY);
+            t -= 0.007;
+        }
+        ctx.stroke();
         }
 
-        // Initialize the platform object:
+        /**
+         * Render callback that is responsible for the rendering of custom scene.
+         * @param {CanvasRenderingContext2D} ctx 2D canvas rendering context
+         * @param {H.map.render.RenderingParams} renderParams parametersthat describe current position of the map
+         */
+        function renderCallback(ctx, renderParams) {
+        var zoom = renderParams.zoom,
+            projection = renderParams.projection,
+            screenCenter = renderParams.screenCenter,
+            radius = Math.pow(2, (projection.exp + zoom)) / (2 * Math.PI),
+            y,
+            pX,
+            pY;
+
+        if (isNaN(lastZoom)) {
+            lastZoom = zoom;
+        }
+
+        ctx.strokeStyle = 'yellow';
+
+        // calculate x,y pixel coordinates of the ISS for the given tick
+        if (zoom !== lastZoom) {
+            x = tick * Math.pow(2, zoom);
+        }
+        x += Math.pow(2, zoom);
+        y = radius * Math.sin(omega * t + PHI);
+
+        
+        // shift calculated position rekative to the pixel projection
+        // and the screen center
+        pX = x - projection.x + screenCenter.x; 
+        pY = y + (projection.w / 2) - projection.y + screenCenter.y;
+
+        // draw crosshair at the given position
+        ctx.moveTo(pX - 10, pY - 10);
+        ctx.lineTo(pX + 10, pY + 10);
+        ctx.moveTo(pX + 10, pY - 10);
+        ctx.lineTo(pX - 10, pY + 10);
+        ctx.stroke();
+
+        if (lastZoom === zoom) {
+            // render the ground track of the ISS
+            drawGroundTrack(x, t, zoom, radius, ctx, projection, screenCenter);
+        }
+
+        lastZoom = zoom;
+
+        tick += 1;
+        t += 0.007;
+        if (tick > 256) {
+            tick = 0;
+            x = 0;
+        }
+
+        // animate continuously
+        return H.map.render.RenderState.ACTIVE;
+        }
+
+        /**
+         * Adds animated canvas screen overlay.
+         *
+         * @param  {H.Map} map      A HERE Map instance within the application
+         * @param   {H.service.Platform} platform    A stub class to access HERE services
+         */
+        function addCanvasOverlay(map, platform){
+            var canvasLayer = new H.map.layer.CanvasLayer(renderCallback)
+
+            map.addLayer(canvasLayer);
+        }
+
+
+        /**
+         * Boilerplate map initialization code starts below:
+         */
+
+        //Step 1: initialize communication with the platform
         var platform = new H.service.Platform({
-        'app_id': 'vySUSBs1fnD746uLfwah',
-        'app_code': '5c_ntaaIPQXNlluzuw956g'
+        app_id: 'vySUSBs1fnD746uLfwah',
+        app_code: '5c_ntaaIPQXNlluzuw956g',
+        useHTTP: true
+        });
+        var pixelRatio = window.devicePixelRatio || 1;
+        var defaultLayers = platform.createDefaultLayers({
+        tileSize: pixelRatio === 1 ? 256 : 512,
+        ppi: pixelRatio === 1 ? undefined : 320
         });
 
-        // Obtain the default map types from the platform object:
-        var defaultLayers = platform.createDefaultLayers();
-
-        // Instantiate (and display) a map object:
-        var map = new H.Map(
-        document.getElementById('mapContainer'),
-        defaultLayers.normal.map,
-        {
-            zoom: 10,
-            center: { lat: 52.5, lng: 13.4 }
+        //Step 2: initialize a map - this map is centered over Mount Everest
+        var map = new H.Map(document.getElementById('map'),
+        defaultLayers.satellite.map,{
+        center: {lat: 0, lng: 0},
+        zoom: 1,
+        pixelRatio: pixelRatio
         });
+
+        //Step 3: make the map interactive
+        // MapEvents enables the event system
+        // Behavior implements default interactions for pan/zoom (also on mobile touch environments)
+        var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+        // Create the default UI components
+        var ui = H.ui.UI.createDefault(map, defaultLayers);
+        // Remove map settings as unnecessary
+        ui.removeControl('mapsettings');
+
+        // Now use the map as required...
+        addCanvasOverlay(map, platform);
+
+        // Markers create...
+        var parisMarker = new H.map.Marker({lat:48.8567, lng:2.3508});
+        map.addObject(parisMarker);
     </script>
 </body>
 </html>

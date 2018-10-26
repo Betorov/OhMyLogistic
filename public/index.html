@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, 
+    width=device-width" />
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-core.js" 
+    type="text/javascript" charset="utf-8"></script>
+    <script src="http://js.api.here.com/v3/3.0/mapsjs-service.js" 
+    type="text/javascript" charset="utf-8"></script>
+  </head>
+<body>
+ <!-- встроенный скрипт -->
+    <script type="text/javascript">
+        // Obtain the default map types from the platform object:
+        var defaultLayers = platform.createDefaultLayers();
+
+        // Instantiate (and display) a map object:
+        var map = new H.Map(
+        document.getElementById('mapContainer'),
+        defaultLayers.normal.map,
+        {
+            zoom: 10,
+            center: { lat: 52.5, lng: 13.4 }
+        });
+    </script>
+</body>
+</html>

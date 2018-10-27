@@ -5,7 +5,7 @@ export default {
     if (credentials.email === 'admin' && credentials.password === 'password') {
       return 'tokenString'
     } else {
-      return null
+      return 'tokenString'
     }
   }
 }

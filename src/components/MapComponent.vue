@@ -21,11 +21,16 @@ export default {
   },
   methods: {
     showNewMarker (lng, lat) {
-      console.log(this.markers.size)
-
       // eslint-disable-next-line
-      var parisMarker = new H.map.Marker({lat:48.8567, lng:2.3508})
+      var parisMarker = new H.map.Marker({lat: lat, lng: lng});
+      debugger
+      // eslint-disable-next-line
       this.map.addObject(parisMarker)
+    },
+    focusNewPoint (lng, lat, zoom) {
+      this.map.setCenter({lat: lat, lng: lng})
+
+      this.map.setZoom(zoom)
     }
   },
   created () {
@@ -53,18 +58,18 @@ export default {
     // eslint-disable-next-line
     var parisMarker = new H.map.Marker({lat:48.8567, lng:2.3508})
     this.map.addObject(parisMarker)
-  },
-  head: {
-    meta: [
-      { name: 'viewport', content: 'initial-scale=1.0, width=device-width' }
-    ],
-    script: [
-      { type: 'text/javascript', src: 'http://js.api.here.com/v3/3.0/mapsjs-core.js' },
-      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-service.js' },
-      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-ui.js' },
-      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-mapevents.js' }
-    ]
   }
+  // head: {
+  //   meta: [
+  //     { name: 'viewport', content: 'initial-scale=1.0, width=device-width' }
+  //   ],
+  //   script: [
+  //     { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-core.js' },
+  //     { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-service.js' },
+  //     { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-ui.js' },
+  //     { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-mapevents.js' }
+  //   ]
+  // }
 }
 </script>
 

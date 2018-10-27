@@ -1,6 +1,7 @@
 <template>
   <div class="MapContainer">
-    <map-component class="map-view"/>
+    <map-component ref='kek' class="map-view"/>
+    <v-btn @click="btnEvent">Button</v-btn>
   </div>
 </template>
 
@@ -22,6 +23,12 @@ export default {
       this.$router.push({
         name: 'Login'
       })
+    }
+  },
+  methods: {
+    btnEvent () {
+      // console.log('wert')
+      this.$refs.kek.showNewMarker(48.8567, 48.8567)
     }
   }
 }

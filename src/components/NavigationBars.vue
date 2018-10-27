@@ -2,6 +2,7 @@
   <div>
     <v-navigation-drawer
       v-model="drawer"
+      mobile-break-point=2000
       fixed
       app
     >

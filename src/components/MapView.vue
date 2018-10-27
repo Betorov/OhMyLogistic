@@ -1,6 +1,6 @@
 <template>
   <div class="MapContainer">
-    <map-component classs="map-view"/>
+    <map-component class="map-view"/>
   </div>
 </template>
 
@@ -48,7 +48,7 @@ a {
   width: 100%;
 }
 .map-view {
-  height: 300px;
+  height: 1600px;
   width: 400px;
 }
 </style>

@@ -58,6 +58,13 @@ export default {
         name: 'MapView'
       })
     }
+  },
+  mounted () {
+    if (this.$store.state.isUserLoggedIn) {
+      this.$router.push({
+        name: 'MapView'
+      })
+    }
   }
 }
 </script>

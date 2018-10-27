@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueHead from 'vue-head'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
@@ -11,6 +12,7 @@ import store from '@/store/store'
 
 Vue.config.productionTip = false
 
+Vue.use(VueHead)
 Vue.use(Vuetify, {
   iconfont: 'mdi'
 })

@@ -1,6 +1,6 @@
 <template>
   <div class="MapContainer">
-    <map-component />
+    <map-component classs="map-view"/>
   </div>
 </template>
 
@@ -46,5 +46,9 @@ a {
 .imageHolder {
   height: 100%;
   width: 100%;
+}
+.map-view {
+  height: 300px;
+  width: 400px;
 }
 </style>

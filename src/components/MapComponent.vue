@@ -10,19 +10,29 @@ export default {
   data () {
     return {
       map: {},
+      behavior: {},
       platform: {},
+      markers: [],
       width: '100%',
-      height: '400px',
+      height: '800px',
       lng: 52.1,
       lat: 33.23
+    }
+  },
+  methods: {
+    showNewMarker (lng, lat) {
+      console.log(this.markers.size)
+
+      // eslint-disable-next-line
+      var parisMarker = new H.map.Marker({lat:48.8567, lng:2.3508})
+      this.map.addObject(parisMarker)
     }
   },
   created () {
     // eslint-disable-next-line
     this.platform = new H.service.Platform({
       app_id: 'vySUSBs1fnD746uLfwah',
-      app_code: '5c_ntaaIPQXNlluzuw956g',
-      useHTTPS: true
+      app_code: '5c_ntaaIPQXNlluzuw956g'
     })
   },
   mounted () {
@@ -36,6 +46,13 @@ export default {
         center: { lng: this.lng, lat: this.lat }
       }
     )
+
+    // eslint-disable-next-line
+    this.behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(this.map))
+
+    // eslint-disable-next-line
+    var parisMarker = new H.map.Marker({lat:48.8567, lng:2.3508})
+    this.map.addObject(parisMarker)
   },
   head: {
     meta: [
@@ -43,7 +60,7 @@ export default {
     ],
     script: [
       { type: 'text/javascript', src: 'http://js.api.here.com/v3/3.0/mapsjs-core.js' },
-      { type: 'text/javascript', src: 'http://js.api.here.com/v3/3.0/mapsjs-service.js' },
+      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-service.js' },
       { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-ui.js' },
       { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-mapevents.js' }
     ]

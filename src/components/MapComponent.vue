@@ -36,8 +36,11 @@ export default {
       { name: 'viewport', content: 'initial-scale=1.0, width=device-width' }
     ],
     script: [
-      { type: 'text/javascript', src: 'http://js.api.here.com/v3/3.0/mapsjs-core.js' },
-      { type: 'text/javascript', src: 'http://js.api.here.com/v3/3.0/mapsjs-service.js' }
+      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-core.js' },
+      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-service.js' },
+      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-ui.js' },
+      { type: 'text/javascript', src: 'https://js.api.here.com/v3/3.0/mapsjs-mapevents.js' }
+
     ]
   }
 }
